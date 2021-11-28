@@ -1,5 +1,5 @@
 {
-    "serverUrl": "http://localhost:5085/api",
+    "serverUrl": "http://localhost:5000/api",
     "apiVersion": "1",
     "equipmentEndpoint": "RentalEquipment",
     "rentalEndpoint": "Rental",
