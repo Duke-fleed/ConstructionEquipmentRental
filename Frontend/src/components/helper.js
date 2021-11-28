@@ -1,7 +1,6 @@
 import { jsPDF } from "jspdf";
 
 export function GeneratePdf(invoice,orderId) {
-    console.log(invoice);
     const doc = new jsPDF();
 
     doc.text(invoice.title, 50, 10);

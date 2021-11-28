@@ -22,7 +22,7 @@ export default class RentalOrderComponent extends React.Component {
     }
   
     componentDidMount() {
-      fetch("https://localhost:7085/RentalEquipment")
+      fetch("http://localhost:5000/RentalEquipment")
         .then(res => res.json())
         .then(
           (result) => {
@@ -41,8 +41,6 @@ export default class RentalOrderComponent extends React.Component {
     }
 
     areAllItemDaysEntered(selectedItems, selectedIdsWithDays){
-        console.log(selectedIdsWithDays);
-        console.log(selectedItems);
         if (selectedIdsWithDays.map(x=>x.numberOfDays).filter(x=> isNaN(parseInt(x)) || parseInt(x)<=0).length>0)
             return false;
         if (selectedItems.filter(x=> !selectedIdsWithDays.map(z=>z.id).includes(x.toString())).length > 0)
@@ -57,16 +55,15 @@ export default class RentalOrderComponent extends React.Component {
         else{
             var selectedIdsWithDays = selectedDays.filter(x=> selectedItems.includes(parseInt(x.id)));
             if (!this.areAllItemDaysEntered(selectedItems,selectedIdsWithDays)){
-                this.setState({displayAlert:true, alertText:"Positive number of days should be enterd for all selected items"});
+                this.setState({displayAlert:true, alertText:"Positive number of days should be entered for all selected items"});
             } else{
                 this.setState({displayAlert:false, alertText:null});
-                console.log(selectedIdsWithDays);
                 const requestOptions = {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify( selectedIdsWithDays.map(x=>({ itemId:x.id, numberOfDays:x.numberOfDays })) )
                 };
-                fetch('https://localhost:7085/Rental', requestOptions)
+                fetch('http://localhost:5000/Rental', requestOptions)
                     .then(response => response.json())
                     .then(data => this.setState({lastOrderId: data, openDialog:true}));
             }
@@ -74,11 +71,10 @@ export default class RentalOrderComponent extends React.Component {
     }
 
     generateInvoice = () => {
-        fetch(`https://localhost:7085/Invoice/${this.state.lastOrderId}`)
+        fetch(`http://localhost:5000/Invoice/${this.state.lastOrderId}`)
         .then(res => res.json())
         .then(
           (result) => {
-             console.log(result);
              GeneratePdf(result, this.state.lastOrderId);
           },
           (error) => {
@@ -91,7 +87,6 @@ export default class RentalOrderComponent extends React.Component {
     }
   
     render() {
-        console.log(this.state);
       const { error, isLoaded, items, selectedItems, selectedDays, openDialog, lastOrderId, displayAlert, alertText } = this.state;
       if (error) {
         return <div>Error: {error.message}</div>;
