@@ -9,7 +9,7 @@ namespace ConstructionEquipmentRental.Api.Features.Rental
     /// Controller for submitting new rental requests
     /// </summary>
     [ApiController]
-    [Route("[controller]")]
+    [Route("api/v{version:apiVersion}/[controller]")]
     public class RentalController : ControllerBase
     {
         private readonly IMediator mediatR;
@@ -25,6 +25,7 @@ namespace ConstructionEquipmentRental.Api.Features.Rental
         /// <param name="items">List of item ids and number of days for rental</param>
         /// <returns>Id of the newly created Rental record</returns>
         [HttpPost]
+        [MapToApiVersion("1")]
         public async Task<ActionResult<int>> Post(ICollection<RentEquipmentRequestItem> items)
         {
             if (!items.Any())

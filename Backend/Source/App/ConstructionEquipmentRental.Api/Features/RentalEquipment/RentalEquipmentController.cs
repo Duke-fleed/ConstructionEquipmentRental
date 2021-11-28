@@ -7,7 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace ConstructionEquipmentRental.Api.Features.RentalEquipment
 {
     [ApiController]
-    [Route("[controller]")]
+    [Route("api/v{version:apiVersion}/[controller]")]
     public class RentalEquipmentController : ControllerBase
     {
         private readonly IMediator mediatR;
@@ -22,6 +22,7 @@ namespace ConstructionEquipmentRental.Api.Features.RentalEquipment
         /// </summary>
         /// <returns>List of items with name and type</returns>
         [HttpGet]
+        [MapToApiVersion("1")]
         public async Task<ActionResult<IEnumerable<RentalEquipmentItem>>> Get()
         {
             try

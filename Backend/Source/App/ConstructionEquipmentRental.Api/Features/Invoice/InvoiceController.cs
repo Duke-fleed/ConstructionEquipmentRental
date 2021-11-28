@@ -10,7 +10,7 @@ namespace ConstructionEquipmentRental.Api.Features.Invoice
     /// Controller for generating invoices
     /// </summary>
     [ApiController]
-    [Route("[controller]")]
+    [Route("api/v{version:apiVersion}/[controller]")]
     public class InvoiceController : ControllerBase
     {
         private readonly IMediator mediatR;
@@ -26,6 +26,7 @@ namespace ConstructionEquipmentRental.Api.Features.Invoice
         /// <param name="rentalId">Id of the rental record, for which invoice needs to be generated</param>
         /// <returns>Invoice object</returns>
         [HttpGet("{rentalId}")]
+        [MapToApiVersion("1")]
         public async Task<ActionResult<InvoiceResponseDto>> Get([FromRoute] int rentalId)
         {
             try

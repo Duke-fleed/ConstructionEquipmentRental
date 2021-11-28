@@ -4,6 +4,7 @@ import Button from '@mui/material/Button';
 import FormDialog from './Dialog'
 import { GeneratePdf } from './helper';
 import { Alert } from '@mui/material';
+import config from '../config.json'
 
 export default class RentalOrderComponent extends React.Component {
     constructor(props) {
@@ -20,9 +21,13 @@ export default class RentalOrderComponent extends React.Component {
         alertText: null
       };
     }
+
+    getUrl(endpoint){
+      return `${config.serverUrl}/v${config.apiVersion}/${endpoint}`
+    }
   
     componentDidMount() {
-      fetch("http://localhost:5000/RentalEquipment")
+      fetch(this.getUrl(config.equipmentEndpoint))
         .then(res => res.json())
         .then(
           (result) => {
@@ -63,7 +68,7 @@ export default class RentalOrderComponent extends React.Component {
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify( selectedIdsWithDays.map(x=>({ itemId:x.id, numberOfDays:x.numberOfDays })) )
                 };
-                fetch('http://localhost:5000/Rental', requestOptions)
+                fetch(this.getUrl(config.rentalEndpoint), requestOptions)
                     .then(response => response.json())
                     .then(data => this.setState({lastOrderId: data, openDialog:true}));
             }
@@ -71,7 +76,7 @@ export default class RentalOrderComponent extends React.Component {
     }
 
     generateInvoice = () => {
-        fetch(`http://localhost:5000/Invoice/${this.state.lastOrderId}`)
+        fetch(this.getUrl(`${config.invoiceEndpoint}/${this.state.lastOrderId}`))
         .then(res => res.json())
         .then(
           (result) => {

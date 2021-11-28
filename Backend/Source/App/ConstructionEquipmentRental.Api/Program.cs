@@ -39,6 +39,7 @@ services.Configure<FeeOptionsEur>(builder.Configuration.GetSection("RentalFeesEu
 services.AddMediatR(typeof(Program), typeof(RentalEquipmentItem));
 services.AddSingleton<IRentalEquipmentInventory, RentalEquipmentInventory>();
 services.AddSingleton<IPersistRental, PersistRental>();
+services.AddApiVersioning();
 
 var app = builder.Build();
 
