@@ -1,3 +1,4 @@
+using System.Net;
 using ConstructionEquipmentRental.Services.MakeEquipmentRental;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
@@ -13,7 +14,7 @@ namespace ConstructionEquipmentRental.Api.Features.Rental
     {
         private readonly IMediator mediatR;
 
-        public RentalController(ILogger<RentalController> logger, IMediator mediatR)
+        public RentalController(IMediator mediatR)
         {
             this.mediatR = mediatR;
         }
@@ -29,7 +30,19 @@ namespace ConstructionEquipmentRental.Api.Features.Rental
             if (!items.Any())
                 return BadRequest("Rental request cannot be empty!");
 
-            return await mediatR.Send(new MakeEquipmentRentalRequest(items.Select(x=> (x.ItemId.Value, x.NumberOfDays.Value))));
+            try
+            {
+                return await mediatR.Send(
+                    new MakeEquipmentRentalRequest(items.Select(x => (x.ItemId.Value, x.NumberOfDays.Value))));
+            }
+            catch (ArgumentException e)
+            {
+                return BadRequest(e.Message);
+            }
+            catch
+            {
+                return StatusCode((int)HttpStatusCode.InternalServerError);
+            }
         }
     }
 }

@@ -1,3 +1,4 @@
+using System.Net;
 using ConstructionEquipmentRental.Api.Features.RentalEquipment;
 using ConstructionEquipmentRental.Services.GenerateInvoice;
 using MediatR;
@@ -12,12 +13,10 @@ namespace ConstructionEquipmentRental.Api.Features.Invoice
     [Route("[controller]")]
     public class InvoiceController : ControllerBase
     {
-        private readonly ILogger<RentalEquipmentController> _logger;
         private readonly IMediator mediatR;
 
-        public InvoiceController(ILogger<RentalEquipmentController> logger, IMediator mediatR)
+        public InvoiceController(IMediator mediatR)
         {
-            _logger = logger;
             this.mediatR = mediatR;
         }
 
@@ -29,10 +28,21 @@ namespace ConstructionEquipmentRental.Api.Features.Invoice
         [HttpGet("{rentalId}")]
         public async Task<ActionResult<InvoiceResponseDto>> Get([FromRoute] int rentalId)
         {
-            var invoiceResponse = await mediatR.Send(new GenerateInvoiceRequest(rentalId));
-            if (invoiceResponse is null)
-                return NotFound();
-            return InvoiceResponseDto.FromDomain(invoiceResponse.Value);
+            try
+            {
+                var invoiceResponse = await mediatR.Send(new GenerateInvoiceRequest(rentalId));
+                if (invoiceResponse is null)
+                    return NotFound();
+                return InvoiceResponseDto.FromDomain(invoiceResponse.Value);
+            }
+            catch (ArgumentException e)
+            {
+                return BadRequest(e.Message);
+            }
+            catch
+            {
+                return StatusCode((int)HttpStatusCode.InternalServerError);
+            }
         }
     }
 }

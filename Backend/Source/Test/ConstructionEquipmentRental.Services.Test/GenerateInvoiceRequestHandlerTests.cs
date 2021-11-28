@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
@@ -62,22 +63,20 @@ namespace ConstructionEquipmentRental.Services.Test
                 new(4, "Item4", EquipmentType.Heavy)
             });
 
-            persistRentalMock.Setup(x => x.GetById(It.IsAny<int>())).ReturnsAsync(new Rental
+            var rentalItems = new List<RentalItem>
             {
-                RentalItems = new List<RentalItem>
+                new()
                 {
-                    new()
-                    {
-                        EquipmentItemId = firstEquipmentId,
-                        NumberOfDays = It.IsAny<int>()
-                    },
-                    new()
-                    {
-                        EquipmentItemId = secondEquipmentId,
-                        NumberOfDays = It.IsAny<int>()
-                    }
+                    EquipmentItemId = firstEquipmentId,
+                    NumberOfDays = It.IsAny<int>()
+                },
+                new()
+                {
+                    EquipmentItemId = secondEquipmentId,
+                    NumberOfDays = It.IsAny<int>()
                 }
-            });
+            };
+            persistRentalMock.Setup(x => x.GetById(It.IsAny<int>())).ReturnsAsync(new Rental(DateTime.UtcNow, rentalItems));
 
             //Act
             var request = new GenerateInvoiceRequest(It.IsAny<int>());
@@ -102,22 +101,20 @@ namespace ConstructionEquipmentRental.Services.Test
             };
             rentalEquipmentInventoryMock.Setup(x => x.GetAll()).ReturnsAsync(inventory);
 
-            persistRentalMock.Setup(x => x.GetById(It.IsAny<int>())).ReturnsAsync(new Rental
+            var rentalItems = new List<RentalItem>
             {
-                RentalItems = new List<RentalItem>
+                new()
                 {
-                    new()
-                    {
-                        EquipmentItemId = firstEquipmentId,
-                        NumberOfDays = firstEquipmentDays
-                    },
-                    new()
-                    {
-                        EquipmentItemId = secondEquipmentId,
-                        NumberOfDays = secondEquipmentDays
-                    }
+                    EquipmentItemId = firstEquipmentId,
+                    NumberOfDays = firstEquipmentDays
+                },
+                new()
+                {
+                    EquipmentItemId = secondEquipmentId,
+                    NumberOfDays = secondEquipmentDays
                 }
-            });
+            };
+            persistRentalMock.Setup(x => x.GetById(It.IsAny<int>())).ReturnsAsync(new Rental(DateTime.UtcNow, rentalItems));
 
             
 

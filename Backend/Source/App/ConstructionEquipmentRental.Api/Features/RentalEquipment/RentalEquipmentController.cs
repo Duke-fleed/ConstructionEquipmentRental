@@ -1,3 +1,4 @@
+using System.Net;
 using ConstructionEquipmentRental.Services.GetRentalEquipment;
 using ConstructionEquipmentRental.Services.Models;
 using MediatR;
@@ -11,7 +12,7 @@ namespace ConstructionEquipmentRental.Api.Features.RentalEquipment
     {
         private readonly IMediator mediatR;
 
-        public RentalEquipmentController(ILogger<RentalEquipmentController> logger, IMediator mediatR)
+        public RentalEquipmentController(IMediator mediatR)
         {
             this.mediatR = mediatR;
         }
@@ -23,7 +24,14 @@ namespace ConstructionEquipmentRental.Api.Features.RentalEquipment
         [HttpGet]
         public async Task<ActionResult<IEnumerable<RentalEquipmentItem>>> Get()
         {
-            return (await mediatR.Send(new GetRentalEquipmentRequest())).ToList();
+            try
+            {
+                return (await mediatR.Send(new GetRentalEquipmentRequest())).ToList();
+            }
+            catch
+            {
+                return StatusCode((int)HttpStatusCode.InternalServerError);
+            }
         }
     }
 }

@@ -21,15 +21,12 @@ namespace ConstructionEquipmentRental.Services.MakeEquipmentRental
             if (request.RentalItemsWithDays.Any(requestItem => equipment.All(x => x.Id != requestItem.id)))
                 throw new ArgumentException("Invalid equipment Id!");
 
-            var rental = new Rental
+            var rentalItems = request.RentalItemsWithDays.Select(x => new RentalItem
             {
-                RentalDateUtc = DateTime.UtcNow,
-                RentalItems = request.RentalItemsWithDays.Select(x => new RentalItem
-                {
-                    NumberOfDays = x.numberOfDays,
-                    EquipmentItemId = x.id
-                })
-            };
+                NumberOfDays = x.numberOfDays,
+                EquipmentItemId = x.id
+            });
+            var rental = new Rental(DateTime.UtcNow, rentalItems);
 
             return (await persistRental.SaveRental(rental)).Id;
         }

@@ -26,7 +26,7 @@ namespace ConstructionEquipmentRental.Api.Features.Invoice
 
         public static InvoiceResponseDto FromDomain(InvoiceResponse invoiceResponse) => new()
         {
-            Title = "Invoice for Construction equipment rental",
+            Title = "Invoice for construction equipment rental",
             Items = invoiceResponse.Items.Select(x => new InvoiceResponseItemDto(x.name, x.price)),
             BonusPointsEarned = invoiceResponse.BonusPointsEarned,
             TotalPrice = invoiceResponse.Items.Sum(x => x.price)
